@@ -1,45 +1,36 @@
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <cmath>
-using namespace std;
-int main()
-{
-    int N;
-    cin >> N;
-    string line;
-    float *n= new float[N] ,fault, student[10] = { 12.7, 4.3 , 3.2,2.8,2.6,2.4,2.4,2.3, 2.3 }, *ai= new float[N], a , *detai= new float[N], *sqdetai = new float[N], om, P, detarand;
-    for (int i = 0; i < N; i++) {
-        cout << "a" << i + 1 << ": ";
-        while (getline(cin, line)) {
-            stringstream ss(line);
-            if ((ss >> n[i]) and (n[i] >= 0))
-            {
-                ss >> n[i];
-                if (ss.eof())
-                    break;
-            }
-        }
-    }
-    float avg =0;
-    for (int i = 0; i < N; i++) {
-        avg = avg + n[i];
-    }
-    avg = avg / N;
-    for (int i = 0; i < N; i++) {
-        detai[i]= abs(n[i]-avg);
-    }
-    float sqavg= 0;
-    for (int i = 0; i < N; i++) {
-        sqdetai[i] =detai[i]*detai[i];
-        sqavg = sqavg+ detai[i] * detai[i];
-    }
-    sqavg = sqrt(sqavg / (N * (N - 1)));
-    P = 0.95;
-    fault = sqavg * student[N-2];
-    cout << setw(15) << "№" << setw(15) << "ai" << setw(15) << "a" << setw(15) << "det(ai)" << setw(15) << "det(ai)^2" << setw(15) << "om" << setw(15) << "P" << setw(5) << "tpn" << setw(15) << "det(a)сл" << endl;
-    for (int i = 0; i < N; i++) {
-        cout << setw(15) << i+1 << setw(15) << n[i] << setw(15) << avg << setw(15) << detai[i] << setw(15) << sqdetai[i]  << setw(15) << sqavg << setw(15) << P << setw(15) << student[N-2] << setw(15) << fault << endl;
-    }
+import telebot
+import random
+from random import randrange
+from telebot import types
+f = open('cry.txt', 'r', encoding='UTF-8')
+cry = f.read().split('\n')
+f.close()
+f = open('joke.txt', 'r', encoding='UTF-8')
+jokes  = f.read().split('\n')
+f.close()
+bot = telebot.TeleBot('5957473078:AAHOZ5m7jKcfKNEfYZF0YZTXHbXYlEgLos4')
+@bot.message_handler(commands=["start", "help"])
+def start(m, res=False):
+        markup=types.ReplyKeyboardMarkup(resize_keyboard=True)
+        item1=types.KeyboardButton("Грустилка")
+        item2=types.KeyboardButton("Шутейка)")
+        markup.add(item1)
+        markup.add(item2)
+        item3 = types.KeyboardButton("Бросить монетку")
+        markup.add(item3)
+        bot.send_message(m.chat.id, 'Выбери что тебе нужно \nГрустилка чтобы погрустить\nШутейка чтобы посмеятся\nБросить монетку чтобы совершить важный выбор ',  reply_markup=markup)
 
-}
+@bot.message_handler(content_types=["text"])
+def handle_text(message):
+    if message.text.strip() == 'Грустилка' :
+            bot.send_message(message.chat.id, random.choice(cry))
+    elif message.text.strip() == 'Шутейка)':
+            bot.send_message(message.chat.id, random.choice(jokes))
+    elif message.text.strip() == 'Бросить монетку':
+        if randrange(1, 3) != 1:
+            bot.send_photo(message.chat.id, open('resh.jpg', 'rb'), "Решка");
+        else:
+            bot.send_photo(message.chat.id, open('orel.jpg', 'rb'), "Ореёл");
+    else:
+        bot.send_message(message.chat.id, "Я вас не понимаю, попробуйте использовать другую команду(")
+bot.polling(none_stop=True, interval=0)
