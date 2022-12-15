@@ -32,5 +32,5 @@ def handle_text(message):
         else:
             bot.send_photo(message.chat.id, open('orel.jpg', 'rb'), "Ореёл");
     else:
-        bot.send_message(message.chat.id, "Я вас не понимаю, попробуйте использовать другую команду(")
+        bot.send_message(message.chat.id, "Я вас не понимаю, попробуйте /help")
 bot.polling(none_stop=True, interval=0)
